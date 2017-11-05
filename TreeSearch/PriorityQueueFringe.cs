@@ -11,29 +11,29 @@ namespace Przesuwanka
         private Func<Element, Element, int> compareElements = null;
         private List<Element> heap = new List<Element>();
        
-        private void Heapify(List<Element> heap, int index, int heapSize)
+        private void MinHeapify(List<Element> heap, int index, int heapSize)
         {
-            int l, r, largest;
+            int left, right, smallest;
             Element x;
-            Func<int, int> left = a => 2 * a + 1;
-            Func<int, int> right = a => 2 * a + 2;
+            Func<int, int> leftNode = a => 2 * a + 1;
+            Func<int, int> rightNode = a => 2 * a + 2;
             Func<Element, Element, bool> isSmaller = (el1, el2) =>
             {
                 return this.compareElements(el1, el2) == -1 ? true : false;
             };
 
-            l = left(index);
-            r = right(index);
+            left = leftNode(index);
+            right = rightNode(index);
 
-            largest = (l < heapSize && isSmaller(heap[l], heap[index])) ? l : index;
-            largest = (r < heapSize && isSmaller(heap[r], heap[largest])) ? r : largest;
+            smallest = (left < heapSize && isSmaller(heap[left], heap[index])) ? left : index;
+            smallest = (right < heapSize && isSmaller(heap[right], heap[smallest])) ? right : smallest;
 
-            if (largest != index)
+            if (smallest != index)
             {
                 x = heap[index];
-                heap[index] = heap[largest];
-                heap[largest] = x;
-                Heapify(heap, largest, heapSize);
+                heap[index] = heap[smallest];
+                heap[smallest] = x;
+                MinHeapify(heap, smallest, heapSize);
             }
         }
 
@@ -41,7 +41,7 @@ namespace Przesuwanka
         {
             for (int i = (heapSize - 1) / 2; i >= 0; i--)
             {
-                Heapify(heap, i, heapSize);
+                MinHeapify(heap, i, heapSize);
             }
         }
        

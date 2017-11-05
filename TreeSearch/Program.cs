@@ -22,44 +22,40 @@ namespace Przesuwanka
             Console.WriteLine();
         }
 
-        static void PrintTable(byte[] table)
+        static void PrintTable(IList<byte> table)
         {
-
-        }
-
-        private static void Heapify(int[] A, int i, int heapSize)
-        {
-            int l, r, x, largest;
-            Func<int, int> left = a => 2 * a + 1;
-            Func<int, int> right = a => 2 * a + 2;
-
-            l = left(i);
-            r = right(i);
-
-            largest = (l < heapSize && A[l] > A[i]) ? l : i;
-            largest = (r < heapSize && A[r] > A[largest]) ? r : largest;
-
-            if (largest != i)
+            Console.WriteLine(table.Count);
+            for (int i = 0; i < table.Count; i++)
             {
-                x = A[i];
-                A[i] = A[largest];
-                A[largest] = x;
-                Heapify(A, largest, heapSize);
+                Console.Write(table[i] + " ");
             }
         }
 
+        
 
         static void Main(string[] args)
         {
-            byte[,] initial = new byte[,] { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 0, 15 } };
+            byte[,] initial = new byte[,] { { 15, 11, 4, 8 }, { 5, 12, 3, 7 }, { 9, 1, 10, 2 }, { 0, 6, 14, 13 } };
             byte[,] goal = new byte[,] { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 15, 0 } };
             int size = 3;
 
             try
             {
-                var przesuwanka = new Przesuwanka(size);
-                var node = TreeSearchWithQueue<byte[, ]>.Search(przesuwanka, new PriorityQueueFringe<Node<byte[,]>>());
+                var przesuwanka = new Przesuwanka(initial, goal);
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var node = TreeSearchWithQueue<byte[,]>.Search(przesuwanka, new PriorityQueueFringe<Node<byte[,]>>());
+                watch.Stop();
                 PrintTable(node.NodeState);
+                var elapsedMs = watch.ElapsedMilliseconds;
+                Console.WriteLine("Time after PriorityQueueFringe {0}", elapsedMs);
+
+                //var przesuwanka2 = new Przesuwanka(przesuwanka.InitialState);
+                //var watch2 = System.Diagnostics.Stopwatch.StartNew();
+                //var node2 = TreeSearchWithQueue<byte[,]>.Search(przesuwanka2, new PriorityQueueFringe<Node<byte[,]>>());
+                //watch2.Stop();
+                //PrintTable(node2.NodeState);
+                //elapsedMs = watch2.ElapsedMilliseconds;
+                //Console.WriteLine("Time after PriorityQueueFringe {0}", elapsedMs);
             }
             catch (ElementNotFoundInPrzesuwankaException e)
             {
