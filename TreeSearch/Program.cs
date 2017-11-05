@@ -8,14 +8,14 @@ namespace Przesuwanka
 {
     class Program
     {
-        static void PrintTable(byte[][] table)
+        static void PrintTable(byte[,] table)
         {
-            foreach (var row in table)
-            {   
+            for (int i = 0; i < table.GetLength(0); i++)
+            {
                 Console.Write("| ");
-                foreach (var column in row)
+                for (int j = 0; j < table.GetLength(1); j++)
                 {
-                    Console.Write(column + " ");
+                    Console.Write(table[i, j] + " ");
                 }
                 Console.WriteLine("|");
             }
@@ -51,14 +51,14 @@ namespace Przesuwanka
 
         static void Main(string[] args)
         {
-            byte[][] initial = new byte[4][] { new byte[] { 1, 2, 3, 4 }, new byte[] { 5, 6, 7, 8 }, new byte[] { 9, 10, 11, 12 }, new byte[] { 13, 14, 0, 15 } };
-            byte[][] goal = new byte[4][] { new byte[] { 1, 2, 3, 4 }, new byte[] { 5, 6, 7, 8 }, new byte[] { 9, 10, 11, 12 }, new byte[] { 13, 14, 15, 0 } };
+            byte[,] initial = new byte[,] { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 0, 15 } };
+            byte[,] goal = new byte[,] { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 15, 0 } };
             int size = 3;
 
             try
             {
                 var przesuwanka = new Przesuwanka(size);
-                var node = TreeSearchWithQueue<byte[][]>.Search(przesuwanka, new PriorityQueueFringe<Node<byte[][]>>());
+                var node = TreeSearchWithQueue<byte[, ]>.Search(przesuwanka, new PriorityQueueFringe<Node<byte[,]>>());
                 PrintTable(node.NodeState);
             }
             catch (ElementNotFoundInPrzesuwankaException e)

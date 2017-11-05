@@ -30,10 +30,10 @@ namespace Przesuwanka
     }
 #endregion
 
-    public class Przesuwanka : IProblem<byte[][]>
+    public class Przesuwanka : IProblem<byte[,]>
     {
-        private byte[][] initial;
-        private byte[][] goal;
+        private byte[,] initial;
+        private byte[,] goal;
          
         public Przesuwanka() : this(3)
         {
@@ -44,7 +44,7 @@ namespace Przesuwanka
             
         }        
 
-        public Przesuwanka(byte[][] initial, byte[][] goal)
+        public Przesuwanka(byte[,] initial, byte[,] goal)
         {            
             this.initial = initial;
             this.goal = goal;
@@ -55,7 +55,7 @@ namespace Przesuwanka
             }
         }
 
-        private static byte[][] MakeInitialState(int size)
+        private static byte[,] MakeInitialState(int size)
         {
             if (size < 1)
             {
@@ -71,73 +71,70 @@ namespace Przesuwanka
                 setOfNumbers.Add(i);
             }
 
-            var initial = new byte[size][];
+            var initial = new byte[size, size];
             for (byte i = 0; i < size; i++)
             {
-                initial[i] = new byte[size];
                 for (byte j = 0; j < size; j++)
                 {
                     var index = (byte)random.Next(0, setOfNumbers.Count - 1);
                     var chosenNumber = setOfNumbers[index];
-                    initial[i][j] = chosenNumber;
+                    initial[i, j] = chosenNumber;
                     setOfNumbers.Remove(chosenNumber);
                 }
             }
             return initial;
         }
 
-        private static byte[][] MakeGoalState(int size)
+        private static byte[,] MakeGoalState(int size)
         {
             if (size < 1)
             {
                 throw new SizeOfPrzesuwankaLessThanOneException("Rozmiar przesuwanki musi wynosić co najmniej 1");
             }
 
-            var goal = new byte[size][];
+            var goal = new byte[size, size];
             byte filler = 0;
             for (byte i = 0; i < size; i++)
             {
-                goal[i] = new byte[size];
                 for (byte j = 0; j < size; j++)
                 {
-                    goal[i][j] = filler++;
+                    goal[i, j] = filler++;
                 }
             }
             return goal;
         }
 
-        private void PrintTable(byte[][] table)
+        private void PrintTable(byte[,] table)
         {
-            foreach (var row in table)
+            for (int i = 0; i < table.GetLength(0); i++)
             {
                 Console.Write("| ");
-                foreach (var column in row)
+                for (int j = 0; j < table.GetLength(1); j++)
                 {
-                    Console.Write(column + " ");
+                    Console.Write(table[i, j] + " ");
                 }
                 Console.WriteLine("|");
             }
             Console.WriteLine();
         }
 
-
-        private bool IsSolvable(byte[][] state)
+        private bool IsSolvable(byte[,] state)
         {
             int inversionsCounter = CountInversions(state);
             return (inversionsCounter % 2 == 0);
         }
 
-        private int CountInversions(byte[][] state)
+        private int CountInversions(byte[,] state)
         {
             int inversionsCounter = 0;
-            int singleArraySize = state.GetLength(0) * state[0].Length;
+            int singleArraySize = state.GetLength(0) * state.GetLength(1);
             int[] stateInSingleArray = new int[singleArraySize];
             int index = 0;
             for (int i = 0; i < state.GetLength(0); i++)
             {
-                for (int j = 0; j < state[i].Length; j++)
+                for (int j = 0; j < state.GetLength(1); j++)
                 {
-                    stateInSingleArray[index++] = state[i][j];
+                    stateInSingleArray[index++] = state[i, j];
                 }
             }
 
@@ -154,9 +151,7 @@ namespace Przesuwanka
             return inversionsCounter;
         }
 
-        
-
-        public byte[][] InitialState
+        public byte[,] InitialState
         {
             get
             {
@@ -164,9 +159,9 @@ namespace Przesuwanka
             }
         }
 
-        public IList<byte[][]> Expand(byte[][] state)
+        public IList<byte[,]> Expand(byte[,] state)
         {
-            List<byte[][]> possibleStates = new List<byte[][]>();
+            List<byte[,]> possibleStates = new List<byte[,]>();
 
             var zeroPosition = FindCoordinatesOfElement(0, state);
             List<Point> possibleMoves = new List<Point>()
@@ -188,40 +183,39 @@ namespace Przesuwanka
             return possibleStates;
         }       
 
-        private byte[][] MakeMove(byte[][] state, Point zeroPosition, Point move)
+        private byte[,] MakeMove(byte[,] state, Point zeroPosition, Point move)
         {
-            byte[][] result = new byte[state.GetLength(0)][];
+            byte[,] result = new byte[state.GetLength(0), state.GetLength(0)];
 
             for (byte i = 0; i < state.GetLength(0); i++)
             {
-                result[i] = new byte[state[i].Length];
-                for (byte j = 0; j < state[i].Length; j++)
+                for (byte j = 0; j < state.GetLength(1); j++)
                 {
-                    result[i][j] = state[i][j];
+                    result[i, j] = state[i, j];
                 }
             }
-            result[zeroPosition.X][zeroPosition.Y] = state[move.X][move.Y];
-            result[move.X][move.Y] = 0;
+            result[zeroPosition.X, zeroPosition.Y] = state[move.X, move.Y];
+            result[move.X, move.Y] = 0;
 
             return result;
         }
 
-        private bool AreCooridinatesWithinTableRange(int x, int y, byte[][] state)
+        private bool AreCooridinatesWithinTableRange(int x, int y, byte[,] state)
         {
-            if (x < 0 || y < 0 || x >= state.GetLength(0) || y >= state[0].Length)
+            if (x < 0 || y < 0 || x >= state.GetLength(0) || y >= state.GetLength(1))
             {
                 return false;
             }
             return true;
         }
 
-        private Point FindCoordinatesOfElement(byte element, byte[][] state)
+        private Point FindCoordinatesOfElement(byte element, byte[,] state)
         {
             for (byte i = 0; i < state.GetLength(0); i++)
             {
-                for (byte j = 0; j < state[i].Length; j++)
+                for (byte j = 0; j < state.GetLength(1); j++)
                 {
-                    if (state[i][j] == element)
+                    if (state[i, j] == element)
                     {
                         return new Point(i, j);
                     }
@@ -230,18 +224,18 @@ namespace Przesuwanka
             throw new ElementNotFoundInPrzesuwankaException($"Element {element} not found");
         }
 
-        public bool IsGoal(byte[][] state)
+        public bool IsGoal(byte[,] state)
         {            
             return AreStatesTheSame(goal, state);
         }
 
-        public bool AreStatesTheSame(byte[][] state1, byte[][] state2)
+        public bool AreStatesTheSame(byte[,] state1, byte[,] state2)
         {            
             for (byte i = 0; i < state1.GetLength(0); i++)
             {
-                for (byte j = 0; j < state1[i].Length; j++)
+                for (byte j = 0; j < state1.GetLength(1); j++)
                 {
-                    if (state1[i][j] != state2[i][j])
+                    if (state1[i, j] != state2[i, j])
                     {
                         return false;
                     }
@@ -250,7 +244,7 @@ namespace Przesuwanka
             return true;
         }
 
-        public int CompareStatesCost(byte[][] state1, byte[][] state2)
+        public int CompareStatesCost(byte[,] state1, byte[,] state2)
         {
             var inversionOfState1 = CountInversions(state1);
             var inversionOfState2 = CountInversions(state2);
