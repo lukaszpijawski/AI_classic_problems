@@ -83,7 +83,17 @@ namespace Przesuwanka
                 throw new SizeOfPrzesuwankaLessThanOneException("Rozmiar przesuwanki musi wynosić co najmniej 1");
             }
 
-            Random random = new Random();
+            List<byte> setOfNumbers = SetNumberOfElements(size);
+            var initial = FillTableRandomlyWithSetOfNumbers(new List<byte>(setOfNumbers), size);
+            while (!IsSolvable(initial))
+            {
+                initial = FillTableRandomlyWithSetOfNumbers(new List<byte>(setOfNumbers), size);
+            }
+            return initial;
+        }
+
+        private static List<byte> SetNumberOfElements(int size)
+        {
             List<byte> setOfNumbers = new List<byte>();
             int numberOfElements = size * size;
 
@@ -91,19 +101,24 @@ namespace Przesuwanka
             {
                 setOfNumbers.Add(i);
             }
+            return setOfNumbers;
+        }
 
-            var initial = new byte[size, size];
+        private static byte[,] FillTableRandomlyWithSetOfNumbers(List<byte> setOfNumbers, int size)
+        {
+            Random random = new Random();
+            var table = new byte[size, size];
             for (byte i = 0; i < size; i++)
             {
                 for (byte j = 0; j < size; j++)
                 {
                     var index = (byte)random.Next(0, setOfNumbers.Count - 1);
                     var chosenNumber = setOfNumbers[index];
-                    initial[i, j] = chosenNumber;
+                    table[i, j] = chosenNumber;
                     setOfNumbers.Remove(chosenNumber);
                 }
             }
-            return initial;
+            return table;
         }
 
         private static byte[,] MakeGoalState(int size)
@@ -157,13 +172,13 @@ namespace Przesuwanka
         #endregion
 
         #region IsSolvable
-        private bool IsSolvable(byte[,] state)
+        private static bool IsSolvable(byte[,] state)
         {
             int inversionsCounter = CountInversions(state);
             return (inversionsCounter % 2 == 0);
         }
 
-        private int CountInversions(byte[,] state)
+        private static int CountInversions(byte[,] state)
         {
             int inversionsCounter = 0;
             int singleArraySize = state.GetLength(0) * state.GetLength(1);
