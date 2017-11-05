@@ -42,7 +42,12 @@ namespace Przesuwanka
         public Przesuwanka(int size) : this(MakeInitialState(size), MakeGoalState(size))
         {
             
-        }        
+        }
+
+        public Przesuwanka(byte[,] initial) : this(initial, MakeGoalState(initial.GetLength(0)))
+        {
+
+        }
 
         public Przesuwanka(byte[,] initial, byte[,] goal)
         {            
