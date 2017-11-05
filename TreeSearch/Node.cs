@@ -44,12 +44,5 @@ namespace Przesuwanka
             }
             return onPathToRoot;
         }
-
-        public static Func<State, State, int> CompareStatesCost { get; set; }
-
-        public static int CompareNodesCost(Node<State> state1, Node<State> state2)
-        {
-            return CompareStatesCost(state1.NodeState, state2.NodeState);
-        }
     }
 }

@@ -37,11 +37,12 @@ namespace Przesuwanka
         {
             byte[,] initial = new byte[,] { { 15, 11, 4, 8 }, { 5, 12, 3, 7 }, { 9, 1, 10, 2 }, { 0, 6, 14, 13 } };
             byte[,] goal = new byte[,] { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 15, 0 } };
-            int size = 3;
+            
+            int size = 4;
 
             try
             {
-                var przesuwanka = new Przesuwanka(initial, goal);
+                var przesuwanka = new Przesuwanka(3);
                 var watch = System.Diagnostics.Stopwatch.StartNew();
                 var node = TreeSearchWithQueue<byte[,]>.Search(przesuwanka, new PriorityQueueFringe<Node<byte[,]>>());
                 watch.Stop();
@@ -51,11 +52,11 @@ namespace Przesuwanka
 
                 //var przesuwanka2 = new Przesuwanka(przesuwanka.InitialState);
                 //var watch2 = System.Diagnostics.Stopwatch.StartNew();
-                //var node2 = TreeSearchWithQueue<byte[,]>.Search(przesuwanka2, new PriorityQueueFringe<Node<byte[,]>>());
+                //var node2 = TreeSearchWithQueue<byte[,]>.Search(przesuwanka2, new QueueFringe<Node<byte[,]>>());
                 //watch2.Stop();
                 //PrintTable(node2.NodeState);
                 //elapsedMs = watch2.ElapsedMilliseconds;
-                //Console.WriteLine("Time after PriorityQueueFringe {0}", elapsedMs);
+                //Console.WriteLine("Time after QueueFringe {0}", elapsedMs);
             }
             catch (ElementNotFoundInPrzesuwankaException e)
             {

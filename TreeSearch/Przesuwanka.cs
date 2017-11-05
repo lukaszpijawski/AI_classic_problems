@@ -32,21 +32,34 @@ namespace Przesuwanka
 
     public class Przesuwanka : IProblem<byte[,]>
     {
+        #region Fields
         private byte[,] initial;
         private byte[,] goal;
-         
+        Dictionary<byte, Point> goalPositions;
+        #endregion
+
+        #region Properties
+        public byte[,] InitialState
+        {
+            get
+            {
+                return initial;
+            }
+        }
+#endregion
+
+        #region Constructors
+
         public Przesuwanka() : this(3)
         {
         }
 
         public Przesuwanka(int size) : this(MakeInitialState(size), MakeGoalState(size))
         {
-            
         }
 
         public Przesuwanka(byte[,] initial) : this(initial, MakeGoalState(initial.GetLength(0)))
         {
-
         }
 
         public Przesuwanka(byte[,] initial, byte[,] goal)
@@ -54,12 +67,15 @@ namespace Przesuwanka
             this.initial = initial;
             this.goal = goal;
             PrintTable(initial);
+            goalPositions = GetStatePositionsOfNumbers(this.goal);
             if (!IsSolvable(initial))
             {
                 throw new UnsolvablePrzesuwankaException("Ta przesuwanka jest nierozwiązywalna");
             }
         }
+        #endregion
 
+        #region Initializers
         private static byte[,] MakeInitialState(int size)
         {
             if (size < 1)
@@ -109,6 +125,22 @@ namespace Przesuwanka
             return goal;
         }
 
+        private Dictionary<byte, Point> GetStatePositionsOfNumbers(byte[,] state)
+        {
+            Dictionary<byte, Point> positions = new Dictionary<byte, Point>();
+
+            for (byte i = 0; i < state.GetLength(0); i++)
+            {
+                for (byte j = 0; j < state.GetLength(1); j++)
+                {
+                    positions.Add(state[i, j], new Point(i, j));
+                }
+            }
+            return positions;
+        }
+        #endregion
+
+        #region PrintTable
         private void PrintTable(byte[,] table)
         {
             for (int i = 0; i < table.GetLength(0); i++)
@@ -122,7 +154,9 @@ namespace Przesuwanka
             }
             Console.WriteLine();
         }
+        #endregion
 
+        #region IsSolvable
         private bool IsSolvable(byte[,] state)
         {
             int inversionsCounter = CountInversions(state);
@@ -155,15 +189,9 @@ namespace Przesuwanka
             }
             return inversionsCounter;
         }
+        #endregion
 
-        public byte[,] InitialState
-        {
-            get
-            {
-                return initial;
-            }
-        }
-
+        #region Expand
         public IList<byte[,]> Expand(byte[,] state)
         {
             List<byte[,]> possibleStates = new List<byte[,]>();
@@ -228,7 +256,9 @@ namespace Przesuwanka
             }
             throw new ElementNotFoundInPrzesuwankaException($"Element {element} not found");
         }
+        #endregion
 
+        #region Comparing states
         public bool IsGoal(byte[,] state)
         {            
             return AreStatesTheSame(goal, state);
@@ -248,15 +278,35 @@ namespace Przesuwanka
             }
             return true;
         }
+        #endregion
+
+        #region Calculating cost
+        private int ManhattanPriority(byte[,] state)
+        {
+            int manhattanPriority = 0;
+            for (byte i = 0; i < state.GetLength(0); i++)
+            {
+                for (byte j = 0; j < state.GetLength(1); j++)
+                {
+                    if (state[i, j] != 0)
+                    {
+                        var cords = goalPositions[state[i, j]];
+                        manhattanPriority += Math.Abs(cords.X - i) + Math.Abs(cords.Y - j);
+                    }
+                }
+            }
+            return manhattanPriority;
+        }
 
         public int CompareStatesCost(byte[,] state1, byte[,] state2)
         {
-            var inversionOfState1 = CountInversions(state1);
-            var inversionOfState2 = CountInversions(state2);
+            var costOfState1 = ManhattanPriority(state1);
+            var costOfState2 = ManhattanPriority(state2);
 
-            if (inversionOfState1 > inversionOfState2) return 1;
-            if (inversionOfState1 < inversionOfState2) return -1;
+            if (costOfState1 > costOfState2) return 1;
+            if (costOfState1 < costOfState2) return -1;
             return 0;
         }
+        #endregion
     }
 }
