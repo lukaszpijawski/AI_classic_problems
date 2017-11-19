@@ -296,9 +296,14 @@ namespace Przesuwanka
         #endregion
 
         #region Calculating cost
-        private int ManhattanPriority(byte[,] state)
+        public double CalculateCostToGoal(byte[,] state)
         {
-            int manhattanPriority = 0;
+            return ManhattanCost(state);
+        }
+
+        private int ManhattanCost(byte[,] state)
+        {
+            int manhattanCost = 0;
             for (byte i = 0; i < state.GetLength(0); i++)
             {
                 for (byte j = 0; j < state.GetLength(1); j++)
@@ -306,22 +311,29 @@ namespace Przesuwanka
                     if (state[i, j] != 0)
                     {
                         var cords = goalPositions[state[i, j]];
-                        manhattanPriority += Math.Abs(cords.X - i) + Math.Abs(cords.Y - j);
+                        manhattanCost += Math.Abs(cords.X - i) + Math.Abs(cords.Y - j);
                     }
                 }
             }
-            return manhattanPriority;
+            return manhattanCost;
         }
 
-        public int CompareStatesCost(byte[,] state1, byte[,] state2)
+        public int CompareStatesPriority(byte[,] state1, double state1PathCost, byte[,] state2, double state2PathCost)
         {
-            var costOfState1 = ManhattanPriority(state1);
-            var costOfState2 = ManhattanPriority(state2);
+            var costOfState1 = ManhattanCost(state1) + state1PathCost;
+            var costOfState2 = ManhattanCost(state2) + state2PathCost;
 
-            if (costOfState1 > costOfState2) return 1;
-            if (costOfState1 < costOfState2) return -1;
+            if (costOfState1 > costOfState2) return -1;
+            if (costOfState1 < costOfState2) return 1;
             return 0;
         }
+
+        public double CalculateCostToNextState(byte[,] state1, byte[,] state2)
+        {
+            return 1.0;
+        }
+
+        
         #endregion
     }
 }

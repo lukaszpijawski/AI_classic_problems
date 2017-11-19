@@ -31,18 +31,19 @@ namespace Przesuwanka
             }
         }
 
-        
-
         static void Main(string[] args)
         {
             byte[,] initial = new byte[,] { { 15, 11, 4, 8 }, { 5, 12, 3, 7 }, { 9, 1, 10, 2 }, { 0, 6, 14, 13 } };
             byte[,] goal = new byte[,] { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 15, 0 } };
-            
+
+            byte[,] initial3 = new byte[,] { { 4, 3, 5 }, { 1, 2, 0 }, { 7, 6, 8 } };
+            byte[,] goal3 = new byte[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } };            
+
             int size = 4;
 
             try
             {
-                var przesuwanka = new Przesuwanka(3);
+                var przesuwanka = new Przesuwanka(size);
                 var watch = System.Diagnostics.Stopwatch.StartNew();
                 var node = TreeSearchWithQueue<byte[,]>.Search(przesuwanka, new PriorityQueueFringe<Node<byte[,]>>());
                 watch.Stop();

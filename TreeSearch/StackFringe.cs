@@ -14,7 +14,7 @@ namespace Przesuwanka
         {
             get
             {
-                return stack.Count == 0;
+                return !stack.Any();
             }
         }
 

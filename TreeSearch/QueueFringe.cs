@@ -15,7 +15,7 @@ namespace Przesuwanka
         {
             get
             {
-                return queue.Count == 0;
+                return !queue.Any();
             }
         }
 

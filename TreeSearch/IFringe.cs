@@ -8,7 +8,7 @@ namespace Przesuwanka
 {
     public interface IFringe<Element>
     {
-        void Add(Element element, Func<Element, Element, int> compareElements = null);
+        void Add(Element element, Func<Element, Element, int> compareElementsPriority = null);
         bool IsEmpty { get; }
         Element Pop();
     }

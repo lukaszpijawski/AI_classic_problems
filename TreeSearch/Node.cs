@@ -10,39 +10,39 @@ namespace Przesuwanka
     {
         public State NodeState { get; private set; }
         private Node<State> parent;
+        public double PathCost { get; private set; }
 
-        public Node(State state, Node<State> parent)
+        public Node(State state, Node<State> parent, double pathCost)
         {
             this.NodeState = state;
             this.parent = parent;
+            this.PathCost = pathCost;
         }
 
         public bool OnPathToRoot(State state, Func<State, State, bool> areStatesTheSame)
         {
-            bool onPathToRoot = false;
             if (areStatesTheSame(this.NodeState, state))
             {
                 return true;
             }
-            if (parent != null)
+            if (parent == null)
             {
-                onPathToRoot = OnPathToRoot(parent, state, areStatesTheSame);
+                return false; 
             }
-            return onPathToRoot;
+            return OnPathToRoot(parent, state, areStatesTheSame);
         }
 
         private bool OnPathToRoot(Node<State> node, State state, Func<State, State, bool> areStatesTheSame)
-        {
-            bool onPathToRoot = false;
+        {            
             if (areStatesTheSame(node.NodeState, state))
             {
                 return true;
             }
-            if (node.parent != null)
+            if (node.parent == null)
             {
-                onPathToRoot = OnPathToRoot(node.parent, state, areStatesTheSame);
+                return false;
             }
-            return onPathToRoot;
+            return OnPathToRoot(node.parent, state, areStatesTheSame);
         }
     }
 }
