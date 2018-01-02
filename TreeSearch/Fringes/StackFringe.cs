@@ -18,14 +18,23 @@ namespace Przesuwanka
             }
         }
 
-        public void Add(Element element, Func<Element, Element, int> compareElements = null)
+        public void Add(Element element)
         {
             stack.Push(element);
+        }
+
+        public string GetName()
+        {
+            return "StackFringe";
         }
 
         public Element Pop()
         {
             return stack.Pop();
+        }
+
+        public void SetPriorityMethod(Func<Element, Element, int> compareMethod, Func<Element, Element, int> compareMethodWithPathCost)
+        {            
         }
     }
 }

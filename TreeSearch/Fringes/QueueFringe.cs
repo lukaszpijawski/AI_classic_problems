@@ -19,7 +19,12 @@ namespace Przesuwanka
             }
         }
 
-        public void Add(Element element, Func<Element, Element, int> compareElements = null)
+        public string GetName()
+        {
+            return "QueueFringe";
+        }
+
+        public void Add(Element element)
         {
             queue.Enqueue(element);
         }
@@ -27,6 +32,10 @@ namespace Przesuwanka
         public Element Pop()
         {
             return queue.Dequeue();
+        }
+
+        public void SetPriorityMethod(Func<Element, Element, int> compareMethod, Func<Element, Element, int> compareMethodWithPathCost)
+        {            
         }
     }
 }

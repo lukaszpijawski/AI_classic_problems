@@ -8,7 +8,7 @@ namespace Przesuwanka
 {
     public class PriorityQueueFringe<Element> : IFringe<Element>        
     {
-        private Func<Element, Element, int> CompareElementsPriority = null;
+        protected Func<Element, Element, int> compareElementsPriority = null;
         private List<Element> heap = new List<Element>();
 
         //private void MinHeapify(List<Element> heap, int index, int heapSize)
@@ -49,6 +49,11 @@ namespace Przesuwanka
             }
         }
 
+        public virtual string GetName()
+        {
+            return "PriorityQueueFringe";
+        }
+
         public Element Pop()
         {
             var element = this.heap[0];
@@ -56,12 +61,8 @@ namespace Przesuwanka
             return element;
         }
 
-        public void Add(Element element, Func<Element, Element, int> compareElementsPriority)
-        {
-            if (this.CompareElementsPriority == null)
-            {
-                this.CompareElementsPriority = compareElementsPriority;
-            }
+        public void Add(Element element)
+        {            
             this.heap.Add(element);
             RepairHeap(heap.Count - 1);
         }
@@ -86,7 +87,15 @@ namespace Przesuwanka
 
         private bool HasFirstElementHigherPriority(Element element1, Element element2)
         {
-            return this.CompareElementsPriority(element1, element2) == 1 ? true : false;
+            return this.compareElementsPriority(element1, element2) == 1 ? true : false;
+        }
+
+        public virtual void SetPriorityMethod(Func<Element, Element, int> compareMethod, Func<Element, Element, int> compareMethodWithPathCost)
+        {
+            if (this.compareElementsPriority == null)
+            {
+                this.compareElementsPriority = compareMethod;
+            }
         }
     }
 }

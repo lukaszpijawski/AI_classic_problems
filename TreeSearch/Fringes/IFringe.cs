@@ -8,8 +8,10 @@ namespace Przesuwanka
 {
     public interface IFringe<Element>
     {
-        void Add(Element element, Func<Element, Element, int> compareElementsPriority = null);
+        void Add(Element element);
         bool IsEmpty { get; }
         Element Pop();
+        void SetPriorityMethod(Func<Element, Element, int> compareMethod, Func<Element, Element, int> compareMethodWithPathCost);
+        string GetName();
     }
 }

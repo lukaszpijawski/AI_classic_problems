@@ -33,37 +33,28 @@ namespace Przesuwanka
 
         static void Main(string[] args)
         {
-            byte[,] initial = new byte[,] { { 15, 11, 4, 8 }, { 5, 12, 3, 7 }, { 9, 1, 10, 2 }, { 0, 6, 14, 13 } };
+            byte[,] initial = new byte[,] { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 15, 14, 0 } };
             byte[,] goal = new byte[,] { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 15, 0 } };
 
-            byte[,] initial3 = new byte[,] { { 4, 3, 5 }, { 1, 2, 0 }, { 7, 6, 8 } };
-            byte[,] goal3 = new byte[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } };            
-
-            int size = 4;
+            byte[,] initial2 = new byte[,] { { 1, 2 }, { 0, 3 } };
+            byte[,] goal2 = new byte[,] { { 1, 2 }, { 3, 0 } };
 
             try
             {
-                var przesuwanka = new Przesuwanka(size);
+                var fringe = new PriorityAStarFringe<Node<byte[,]>>();
+                var przesuwanka = new Przesuwanka(3);
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                var node = TreeSearchWithQueue<byte[,]>.Search(przesuwanka, new PriorityQueueFringe<Node<byte[,]>>());
+                var node = TreeSearchWithQueue<byte[,]>.Search(przesuwanka, fringe);
                 watch.Stop();
                 PrintTable(node.NodeState);
                 var elapsedMs = watch.ElapsedMilliseconds;
-                Console.WriteLine("Time after PriorityQueueFringe {0}", elapsedMs);
-
-                //var przesuwanka2 = new Przesuwanka(przesuwanka.InitialState);
-                //var watch2 = System.Diagnostics.Stopwatch.StartNew();
-                //var node2 = TreeSearchWithQueue<byte[,]>.Search(przesuwanka2, new QueueFringe<Node<byte[,]>>());
-                //watch2.Stop();
-                //PrintTable(node2.NodeState);
-                //elapsedMs = watch2.ElapsedMilliseconds;
-                //Console.WriteLine("Time after QueueFringe {0}", elapsedMs);
+                Console.WriteLine("Time after {1} {0}", elapsedMs, fringe.GetName());
             }
             catch (ElementNotFoundInPrzesuwankaException e)
             {
                 Console.WriteLine(e.Message);
             }
-            catch (UnsolvablePrzesuwankaException e)
+            catch (UnsolvableProblemException e)
             {
                 Console.WriteLine(e.Message);
             }

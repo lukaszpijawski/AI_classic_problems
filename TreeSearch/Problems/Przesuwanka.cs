@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace Przesuwanka
 {
     #region Exceptions
-    public class UnsolvablePrzesuwankaException : Exception
+    public class UnsolvableProblemException : Exception
     {
-        public UnsolvablePrzesuwankaException(string message) : base(message)
+        public UnsolvableProblemException(string message) : base(message)
         {
         }
     }
@@ -22,9 +22,9 @@ namespace Przesuwanka
         }
     }
 
-    public class SizeOfPrzesuwankaLessThanOneException : Exception
+    public class SizeOfProblemException : Exception
     {
-        public SizeOfPrzesuwankaLessThanOneException(string message) : base(message)
+        public SizeOfProblemException(string message) : base(message)
         {
         }
     }
@@ -46,7 +46,7 @@ namespace Przesuwanka
                 return initial;
             }
         }
-#endregion
+        #endregion
 
         #region Constructors
 
@@ -70,7 +70,7 @@ namespace Przesuwanka
             goalPositions = GetStatePositionsOfNumbers(this.goal);
             if (!IsSolvable(initial))
             {
-                throw new UnsolvablePrzesuwankaException("Ta przesuwanka jest nierozwiązywalna");
+                throw new UnsolvableProblemException("Ta przesuwanka jest nierozwiązywalna");
             }
         }
         #endregion
@@ -80,7 +80,7 @@ namespace Przesuwanka
         {
             if (size < 1)
             {
-                throw new SizeOfPrzesuwankaLessThanOneException("Rozmiar przesuwanki musi wynosić co najmniej 1");
+                throw new SizeOfProblemException("Rozmiar przesuwanki musi wynosić co najmniej 1");
             }
 
             List<byte> setOfNumbers = SetNumberOfElements(size);
@@ -125,11 +125,11 @@ namespace Przesuwanka
         {
             if (size < 1)
             {
-                throw new SizeOfPrzesuwankaLessThanOneException("Rozmiar przesuwanki musi wynosić co najmniej 1");
+                throw new SizeOfProblemException("Rozmiar przesuwanki musi wynosić co najmniej 1");
             }
 
             var goal = new byte[size, size];
-            byte filler = 0;
+            byte filler = 1;
             for (byte i = 0; i < size; i++)
             {
                 for (byte j = 0; j < size; j++)
@@ -137,6 +137,7 @@ namespace Przesuwanka
                     goal[i, j] = filler++;
                 }
             }
+            goal[size - 1, size - 1] = 0;
             return goal;
         }
 
@@ -175,9 +176,11 @@ namespace Przesuwanka
         private static bool IsSolvable(byte[,] state)
         {
             int inversionsCounter = CountInversions(state);
-            return (inversionsCounter % 2 == 0);
+            var positionOfZero = FindCoordinatesOfElement(0, state);
+            var xLength = state.GetLength(0);
+            return ((xLength % 2 == 1) && (inversionsCounter % 2 == 0))  ||  ((xLength % 2 == 0) && (((xLength - positionOfZero.X) % 2 == 1) == (inversionsCounter % 2 == 0)));
         }
-
+            
         private static int CountInversions(byte[,] state)
         {
             int inversionsCounter = 0;
@@ -257,7 +260,7 @@ namespace Przesuwanka
             return true;
         }
 
-        private Point FindCoordinatesOfElement(byte element, byte[,] state)
+        private static Point FindCoordinatesOfElement(byte element, byte[,] state)
         {
             for (byte i = 0; i < state.GetLength(0); i++)
             {
@@ -318,7 +321,17 @@ namespace Przesuwanka
             return manhattanCost;
         }
 
-        public int CompareStatesPriority(byte[,] state1, double state1PathCost, byte[,] state2, double state2PathCost)
+        public int CompareStatesPriority(byte[,] state1, byte[,] state2)
+        {
+            var costOfState1 = ManhattanCost(state1);
+            var costOfState2 = ManhattanCost(state2);
+
+            if (costOfState1 > costOfState2) return -1;
+            if (costOfState1 < costOfState2) return 1;
+            return 0;
+        }
+
+        public int CompareStatesPriorityWithPathCost(byte[,] state1, byte[,] state2, double state1PathCost, double state2PathCost)
         {
             var costOfState1 = ManhattanCost(state1) + state1PathCost;
             var costOfState2 = ManhattanCost(state2) + state2PathCost;

@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BB543D43-18EB-40A5-9DEB-EF87D1D58727}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>TreeSearch</RootNamespace>
-    <AssemblyName>TreeSearch</AssemblyName>
+    <RootNamespace>Przesuwanka</RootNamespace>
+    <AssemblyName>Przesuwanka</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,17 +42,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IFringe.cs" />
-    <Compile Include="IProblem.cs" />
-    <Compile Include="Node.cs" />
-    <Compile Include="Point.cs" />
-    <Compile Include="PriorityQueueFringe.cs" />
+    <Compile Include="Fringes\IFringe.cs" />
+    <Compile Include="Problems\IProblem.cs" />
+    <Compile Include="Node\Node.cs" />
+    <Compile Include="Point\Point.cs" />
+    <Compile Include="Fringes\PriorityAStarFringe.cs" />
+    <Compile Include="Fringes\PriorityQueueFringe.cs" />
+    <Compile Include="Problems\NQueens.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Przesuwanka.cs" />
-    <Compile Include="QueueFringe.cs" />
-    <Compile Include="StackFringe.cs" />
-    <Compile Include="TreeSearchWithQueue.cs" />
+    <Compile Include="Problems\Przesuwanka.cs" />
+    <Compile Include="Fringes\QueueFringe.cs" />
+    <Compile Include="Fringes\StackFringe.cs" />
+    <Compile Include="TreeSearchWithQueue\TreeSearchWithQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -17,4 +17,17 @@ namespace Przesuwanka
             Y = y;
         }
     }
+
+    class PointEqualityComparer : IEqualityComparer<Point>
+    {
+        public bool Equals(Point x, Point y)
+        {
+            return x.X.Equals(y.X) && x.Y.Equals(y.Y);
+        }
+
+        public int GetHashCode(Point obj)
+        {
+            return -2;
+        }
+    }
 }

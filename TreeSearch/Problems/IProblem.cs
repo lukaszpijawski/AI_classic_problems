@@ -12,7 +12,8 @@ namespace Przesuwanka
         bool IsGoal(State state);
         IList<State> Expand(State state);
         bool AreStatesTheSame(State state1, State state2);
-        int CompareStatesPriority(State state1, double state1PathCost, State state2, double state2PathCost);
+        int CompareStatesPriority(State state1, State state2);
+        int CompareStatesPriorityWithPathCost(State state1, State state2, double state1PathCost, double state2PathCost);
         double CalculateCostToNextState(State state1, State state2);
         double CalculateCostToGoal(State state);
     }
