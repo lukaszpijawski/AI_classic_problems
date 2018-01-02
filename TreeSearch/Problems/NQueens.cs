@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Przesuwanka.Problems
+namespace Przesuwanka
 {
     public class NQueens : IProblem<byte[]>
     {
@@ -27,7 +27,7 @@ namespace Przesuwanka.Problems
 
         #region Constructors
 
-        public NQueens() : this(4)
+        public NQueens() : this(8)
         {
         }
 
@@ -48,7 +48,7 @@ namespace Przesuwanka.Problems
         }
         #endregion
 
-        #region initializerss
+        #region Initializers
         private static byte[] MakeInitialState(int size)
         {
             if (size < 1)
@@ -56,7 +56,7 @@ namespace Przesuwanka.Problems
                 throw new SizeOfProblemException("Liczba hetmanów musi wynosić co najmniej 1");
             }
 
-            var columnNumbers = new List<byte>(_columnNumbers);
+            var columnNumbers = GetColumnNumbers(size);
             var random = new Random();
             byte[] initial = new byte[size];
 
@@ -69,10 +69,10 @@ namespace Przesuwanka.Problems
             return initial;
         }
 
-        private List<byte> GetColumnNumbers(int rozmiar)
+        private static List<byte> GetColumnNumbers(int size)
         {
-            var numeryKolumn = new List<byte>(rozmiar);
-            for (int i = 0; i < rozmiar; i++)
+            var numeryKolumn = new List<byte>(size);
+            for (int i = 0; i < size; i++)
             {
                 numeryKolumn.Add((byte)(i));
             }

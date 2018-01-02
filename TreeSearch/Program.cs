@@ -27,8 +27,9 @@ namespace Przesuwanka
             Console.WriteLine(table.Count);
             for (int i = 0; i < table.Count; i++)
             {
-                Console.Write(table[i] + " ");
+                Console.Write((table[i] + 1) + " ");
             }
+            Console.WriteLine();
         }
 
         static void Main(string[] args)
@@ -41,14 +42,8 @@ namespace Przesuwanka
 
             try
             {
-                var fringe = new PriorityAStarFringe<Node<byte[,]>>();
-                var przesuwanka = new Przesuwanka(3);
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-                var node = TreeSearchWithQueue<byte[,]>.Search(przesuwanka, fringe);
-                watch.Stop();
-                PrintTable(node.NodeState);
-                var elapsedMs = watch.ElapsedMilliseconds;
-                Console.WriteLine("Time after {1} {0}", elapsedMs, fringe.GetName());
+                var fringe = new PriorityQueueFringe<Node<byte[]>>();
+                SolveNQueens(fringe, 8);
             }
             catch (ElementNotFoundInPrzesuwankaException e)
             {
@@ -66,6 +61,28 @@ namespace Przesuwanka
                     Console.WriteLine("Inner exception message: " + e.InnerException.Message);
                 }
             }
+        }
+
+        private static void SolvePrzesuwanka(IFringe<Node<byte[,]>> fringe, int problemSize)
+        {
+            var przesuwanka = new Przesuwanka(problemSize);
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var node = TreeSearchWithQueue<byte[,]>.Search(przesuwanka, fringe);
+            watch.Stop();
+            PrintTable(node.NodeState);
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.WriteLine("Time after {1} {0}", elapsedMs, fringe.GetName());
+        }
+
+        private static void SolveNQueens(IFringe<Node<byte[]>> fringe, int problemSize)
+        {
+            var nQueens = new NQueens(problemSize);
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var node = TreeSearchWithQueue<byte[]>.Search(nQueens, fringe);
+            watch.Stop();
+            PrintTable(node.NodeState);
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.WriteLine("Time after {1} {0}", elapsedMs, fringe.GetName());
         }
     }
 }
