@@ -18,9 +18,18 @@ namespace PrzesuwankaTests
         }
 
         [TestMethod]
-        public void TestExpandMethod()
+        public void TestCalculateStraightLineDistance()
         {
-            
+            //arrange
+            City city1 = new City("A", new Point(2, 1));
+            City city2 = new City("B", new Point(6, 4));
+            PrivateObject romaniaMap = new PrivateObject(new RomaniaMap(city1, city2, new System.Collections.Generic.List<City>()));
+
+            //act
+            var result = romaniaMap.Invoke("CalculateStraightLineDistance", city1, city2);
+
+            //assert
+            Assert.AreEqual(result, 5.0);
         }
     }
 }

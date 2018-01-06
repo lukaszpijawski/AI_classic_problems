@@ -42,13 +42,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="City.cs" />
     <Compile Include="Fringes\IFringe.cs" />
+    <Compile Include="Neighbour.cs" />
     <Compile Include="Problems\IProblem.cs" />
     <Compile Include="Node\Node.cs" />
     <Compile Include="Point\Point.cs" />
     <Compile Include="Fringes\PriorityAStarFringe.cs" />
     <Compile Include="Fringes\PriorityQueueFringe.cs" />
     <Compile Include="Problems\NQueens.cs" />
+    <Compile Include="Problems\RomaniaMap.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Problems\Przesuwanka.cs" />

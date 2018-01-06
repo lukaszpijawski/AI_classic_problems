@@ -28,7 +28,7 @@ namespace Przesuwanka
         {
         }
     }
-#endregion
+    #endregion
 
     public class Przesuwanka : IProblem<byte[,]>
     {

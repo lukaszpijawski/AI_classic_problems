@@ -44,5 +44,42 @@ namespace Przesuwanka
             }
             return OnPathToRoot(node.parent, state, areStatesTheSame);
         }
+
+        public void PrintPath()
+        {
+            if (this.parent != null)
+            {
+                parent.PrintPath();
+            }
+            Console.WriteLine(this.NodeState);
+        }
+
+        private List<State> listOfNodes;
+        public List<State> ListOfNodes
+        {
+            get
+            {
+                if (listOfNodes == null || !listOfNodes.Any())
+                {
+                    listOfNodes = new List<State>(CreateListOfNodes());                    
+                }
+                return listOfNodes;
+            }
+        }
+        private List<State> CreateListOfNodes()
+        {
+            List<State> list = new List<State>();
+            if (this.parent != null)
+            {
+                foreach (var state in parent.CreateListOfNodes())
+                {
+                    list.Add(state);
+                }
+                list.Add(this.NodeState);
+                return list;
+            }
+            list.Add(this.NodeState);
+            return list;
+        }
     }
 }
