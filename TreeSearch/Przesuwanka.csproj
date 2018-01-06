@@ -42,9 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="City.cs" />
+    <Compile Include="City\City.cs" />
     <Compile Include="Fringes\IFringe.cs" />
-    <Compile Include="Neighbour.cs" />
+    <Compile Include="City\Neighbour.cs" />
     <Compile Include="Problems\IProblem.cs" />
     <Compile Include="Node\Node.cs" />
     <Compile Include="Point\Point.cs" />

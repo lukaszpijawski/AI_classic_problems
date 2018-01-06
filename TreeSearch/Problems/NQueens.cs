@@ -64,7 +64,7 @@ namespace Przesuwanka
             {
                 var indeks = random.Next(0, columnNumbers.Count - 1);
                 initial[j] = columnNumbers[indeks];
-                columnNumbers.RemoveAt(indeks);
+                //columnNumbers.RemoveAt(indeks);
             }
             return initial;
         }

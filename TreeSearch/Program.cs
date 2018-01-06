@@ -24,7 +24,6 @@ namespace Przesuwanka
 
         static void PrintTable(IList<byte> table)
         {
-            Console.WriteLine(table.Count);
             for (int i = 0; i < table.Count; i++)
             {
                 Console.Write((table[i] + 1) + " ");
@@ -33,9 +32,34 @@ namespace Przesuwanka
         }
 
         static void Main(string[] args)
+        {           
+            try
+            {
+                SolveProblems();
+            }
+            catch (ElementNotFoundInPrzesuwankaException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            catch (UnsolvableProblemException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Other exception, its source: {0}, message: {1}", e.Source, e.Message);
+                if (e.InnerException != null)
+                {
+                    Console.WriteLine("Inner exception message: " + e.InnerException.Message);
+                }
+            }
+        }    
+        
+        private static void SolveProblems()
         {
             #region Cities initialization
-            var Oradea = new City("Oradea", new Point(15, 59));            
+            #region Cities initialization
+            var Oradea = new City("Oradea", new Point(15, 59));
             var Zerind = new City("Zerind", new Point(11, 51));
             var Arad = new City("Arad", new Point(7, 43));
             var Timisoara = new City("Timisoara", new Point(8, 29));
@@ -129,81 +153,95 @@ namespace Przesuwanka
             {
                 Oradea, Zerind, Arad, Timisoara, Lugoj, Mehadia, Drobeta, Sibiu, Rimnicu, Craiova, Fagaras, Pitesti, Giurgiu, Bucharest, Neamt, Urziceni, Iasi, Vaslui, Hirsova, Eforie
             };
-            
-            try
-            {
-                var queensFringe = new PriorityQueueFringe<Node<byte[]>>();
-                var romaniaFringe = new PriorityAStarFringe<Node<City>>();
-                var przesuwankaFringe = new PriorityQueueFringe<Node<byte[,]>>();
+            #endregion
 
-                //SolveNQueens(queensFringe, 8);
-                //SolveRomaniaMap(romaniaFringe, Arad, Bucharest, cities);
-                SolvePrzesuwanka(przesuwankaFringe, 4);
-            }
-            catch (ElementNotFoundInPrzesuwankaException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            catch (UnsolvableProblemException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Other exception, its source: {0}, message: {1}", e.Source, e.Message);
-                if (e.InnerException != null)
-                {
-                    Console.WriteLine("Inner exception message: " + e.InnerException.Message);
-                }
-            }
-        }        
+            var queensFringe = new PriorityQueueFringe<Node<byte[]>>();
+            var romaniaFringe = new PriorityAStarFringe<Node<City>>();
+            var przesuwankaFringe = new PriorityQueueFringe<Node<byte[,]>>();
+
+            SolveNQueens(queensFringe, 8);
+            SolveRomaniaMap(romaniaFringe, Arad, Bucharest, cities);
+            SolvePrzesuwanka(przesuwankaFringe, 4);
+        }
 
         private static void SolvePrzesuwanka(IFringe<Node<byte[,]>> fringe, int problemSize)
         {
+            Console.WriteLine("Przesuwanka {0} x {0}", problemSize);
+
             var przesuwanka = new Przesuwanka(problemSize);
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var node = TreeSearchWithQueue<byte[,]>.Search(przesuwanka, fringe);
             watch.Stop();
-            PrintTable(node.NodeState);
+            if (node == null)
+            {
+                Console.WriteLine("Solution not found");
+            }
+            else
+            {
+                Console.WriteLine("Solution:");
+                PrintTable(node.NodeState);
+                var trace = node.ListOfNodes;
+                Console.WriteLine("Number of steps: " + trace.Count);                
+            }            
             var elapsedMs = watch.ElapsedMilliseconds;
-            Console.WriteLine("Time after {1} {0}", elapsedMs, fringe.GetName());
+            Console.WriteLine("\nUsed fringe: " + fringe.GetName());
+            Console.WriteLine("Time elapsed [ms]: " + elapsedMs);
+            Console.WriteLine("\n");
         }
 
         private static void SolveNQueens(IFringe<Node<byte[]>> fringe, int problemSize)
         {
+            Console.WriteLine("{0} queens problem", problemSize);
+
             var nQueens = new NQueens(problemSize);
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var node = TreeSearchWithQueue<byte[]>.Search(nQueens, fringe);
             watch.Stop();
-            PrintTable(node.NodeState);
+            if (node == null)
+            {
+                Console.WriteLine("Solution not found");
+            }
+            else
+            {                
+                Console.WriteLine("Solution:");
+                PrintTable(node.NodeState);
+                var trace = node.ListOfNodes;
+                Console.WriteLine("Number of steps: " + trace.Count);                
+            }
             var elapsedMs = watch.ElapsedMilliseconds;
-            Console.WriteLine("Time after {1} {0}", elapsedMs, fringe.GetName());
+            Console.WriteLine("\nUsed fringe: " + fringe.GetName());
+            Console.WriteLine("Time elapsed [ms]: " + elapsedMs);
+            Console.WriteLine("\n");
         }
 
         private static void SolveRomaniaMap(IFringe<Node<City>> fringe, City initial, City goal, List<City> cities)
         {
+            Console.WriteLine("Romania map problem");
             Console.WriteLine("Trace " + initial.Name + " - " + goal.Name + ": \n");
+
             var romaniaMap = new RomaniaMap(initial, goal, cities);
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var node = TreeSearchWithQueue<City>.Search(romaniaMap, fringe);
             watch.Stop();
             if (node == null)
             {
-                Console.WriteLine("Not found solution");
+                Console.WriteLine("Solution not found");
             }
             else
-            {
-                //node.PrintPath();
+            {                
+                Console.WriteLine("Solution:");
                 var trace = node.ListOfNodes;
                 foreach (var city in trace)
                 {
                     Console.WriteLine(city.Name);
                 }
+                Console.WriteLine("\nNumber of steps: " + trace.Count);
                 Console.WriteLine("Total cost: " + node.PathCost);
             }
             var elapsedMs = watch.ElapsedMilliseconds;
             Console.WriteLine("\nUsed fringe: " + fringe.GetName());
             Console.WriteLine("Time elapsed [ms]: " + elapsedMs);
+            Console.WriteLine("\n");
         }
     }
 }

@@ -9,37 +9,7 @@ namespace Przesuwanka
     public class PriorityQueueFringe<Element> : IFringe<Element>        
     {
         protected Func<Element, Element, int> compareElementsPriority = null;
-        private List<Element> heap = new List<Element>();
-
-        //private void MinHeapify(List<Element> heap, int index, int heapSize)
-        //{
-        //    int left, right, smallest;
-        //    Element x;
-        //    Func<int, int> leftNode = a => 2 * a + 1;
-        //    Func<int, int> rightNode = a => 2 * a + 2;
-            
-        //    left = leftNode(index);
-        //    right = rightNode(index);
-
-        //    smallest = (left < heapSize && HasFirstElementHigherPriority(heap[left], heap[index])) ? left : index;
-        //    smallest = (right < heapSize && HasFirstElementHigherPriority(heap[right], heap[smallest])) ? right : smallest;
-
-        //    if (smallest != index)
-        //    {
-        //        x = heap[index];
-        //        heap[index] = heap[smallest];
-        //        heap[smallest] = x;
-        //        MinHeapify(heap, smallest, heapSize);
-        //    }
-        //}
-
-        //private void BuildHeap(List<Element> heap, int heapSize)
-        //{
-        //    for (int i = (heapSize - 1) / 2; i >= 0; i--)
-        //    {
-        //        MinHeapify(heap, i, heapSize);
-        //    }
-        //}
+        private List<Element> heap = new List<Element>();        
        
         public bool IsEmpty
         {
@@ -91,11 +61,8 @@ namespace Przesuwanka
         }
 
         public virtual void SetPriorityMethod(Func<Element, Element, int> compareMethod, Func<Element, Element, int> compareMethodWithPathCost)
-        {
-            if (this.compareElementsPriority == null)
-            {
-                this.compareElementsPriority = compareMethod;
-            }
+        {           
+            this.compareElementsPriority = compareMethod;            
         }
     }
 }
