@@ -32,7 +32,7 @@ namespace Przesuwanka
         }
 
         static void Main(string[] args)
-        {           
+        {
             try
             {
                 SolveProblems();
@@ -181,11 +181,16 @@ namespace Przesuwanka
                 Console.WriteLine("Solution:");
                 PrintTable(node.NodeState);
                 var trace = node.ListOfNodes;
+                //foreach (var state in trace)
+                //{
+                //    PrintTable(state);
+                //}
                 Console.WriteLine("Number of steps: " + trace.Count);                
             }            
             var elapsedMs = watch.ElapsedMilliseconds;
             Console.WriteLine("\nUsed fringe: " + fringe.GetName());
             Console.WriteLine("Time elapsed [ms]: " + elapsedMs);
+            Console.WriteLine(new String('-', 40));
             Console.WriteLine("\n");
         }
 
@@ -211,6 +216,7 @@ namespace Przesuwanka
             var elapsedMs = watch.ElapsedMilliseconds;
             Console.WriteLine("\nUsed fringe: " + fringe.GetName());
             Console.WriteLine("Time elapsed [ms]: " + elapsedMs);
+            Console.WriteLine(new String('-', 40));
             Console.WriteLine("\n");
         }
 
@@ -241,6 +247,7 @@ namespace Przesuwanka
             var elapsedMs = watch.ElapsedMilliseconds;
             Console.WriteLine("\nUsed fringe: " + fringe.GetName());
             Console.WriteLine("Time elapsed [ms]: " + elapsedMs);
+            Console.WriteLine(new String('-', 40));
             Console.WriteLine("\n");
         }
     }

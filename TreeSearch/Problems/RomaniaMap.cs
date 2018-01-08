@@ -19,8 +19,7 @@ namespace Przesuwanka
         {
             _initial = initial;
             _goal = goal;
-            _cities = cities;
-            //PrintCities(_cities);
+            _cities = cities;            
         }
         #endregion
 
