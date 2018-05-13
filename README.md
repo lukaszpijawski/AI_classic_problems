@@ -1,7 +1,14 @@
-# README #
+# AI classic problems #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This is a program which solves basic problems:
+* n-Puzzle
+* n-queens
+* Romania map
 
-### What is this repository for? ###
+Using these methods:
+* Stack
+* Queue
+* Priority Queue
+* A*
 
-This is for my tasks on Artificial Intelligence
+In this project I've learned something about those concepts and trained a bit my C# coding skill.
