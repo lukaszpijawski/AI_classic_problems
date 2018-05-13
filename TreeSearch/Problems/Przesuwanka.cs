@@ -66,7 +66,7 @@ namespace Przesuwanka
         {            
             this.initial = initial;
             this.goal = goal;
-            PrintTable(initial);
+            //PrintTable(initial);
             goalPositions = GetStatePositionsOfNumbers(this.goal);
             if (!IsSolvable(initial))
             {
@@ -76,7 +76,7 @@ namespace Przesuwanka
         #endregion
 
         #region Initializers
-        private static byte[,] MakeInitialState(int size)
+        public static byte[,] MakeInitialState(int size)
         {
             if (size < 1)
             {

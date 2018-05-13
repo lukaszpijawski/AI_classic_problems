@@ -31,6 +31,14 @@ namespace Przesuwanka
             Console.WriteLine();
         }
 
+        private static void PrintTrace(List<City> trace)
+        {
+            foreach (var node in trace)
+            {
+                Console.WriteLine(node.Name);
+            }
+        }
+
         static void Main(string[] args)
         {
             try
@@ -155,22 +163,48 @@ namespace Przesuwanka
             };
             #endregion
 
-            var queensFringe = new PriorityQueueFringe<Node<byte[]>>();
-            var romaniaFringe = new PriorityAStarFringe<Node<City>>();
-            var przesuwankaFringe = new PriorityQueueFringe<Node<byte[,]>>();
+            var przesuwankaInitial = Przesuwanka.MakeInitialState(3);
+            SolveProblem<byte[,]>(String.Format("Przesuwanka {0} x {0}", przesuwankaInitial.GetLength(0)), new Przesuwanka(przesuwankaInitial), PrintTable);
 
-            SolveNQueens(queensFringe, 8);
-            SolveRomaniaMap(romaniaFringe, Arad, Bucharest, cities);
-            SolvePrzesuwanka(przesuwankaFringe, 4);
+            var queensInitial = NQueens.MakeInitialState(8);
+            SolveProblem<byte[]>(String.Format("{0} queens problem", queensInitial.Length), new NQueens(queensInitial), PrintTable);
+
+            SolveProblem<City>("Romania map problem", new RomaniaMap(Arad, Bucharest, cities), city => Console.WriteLine(city.Name), PrintTrace);       
         }
 
-        private static void SolvePrzesuwanka(IFringe<Node<byte[,]>> fringe, int problemSize)
+        private static IList<IFringe<Node<State>>> GetFringes<State>()
         {
-            Console.WriteLine("Przesuwanka {0} x {0}", problemSize);
+            return new List<IFringe<Node<State>>>
+            {                                
+                new PriorityQueueFringe<Node<State>>(),
+                new PriorityAStarFringe<Node<State>>(),
+                new QueueFringe<Node<State>>(),
+                new StackFringe<Node<State>>()
+            };
+        }
 
-            var przesuwanka = new Przesuwanka(problemSize);
+        private static void SolveProblem<State>(string title, IProblem<State> problem, Action<State> printState, Action<List<State>> printTrace = null)
+        {
+            var fringes = GetFringes<State>();
+            Console.WriteLine(title);            
+            foreach (var fringe in fringes)
+            {                
+                var task = Task.Run(() => SolveProblemWithFringe(problem, printState, printTrace, fringe));
+                if (!task.Wait(TimeSpan.FromSeconds(6)))
+                {
+                    Console.WriteLine("\nSolving with " + fringe.GetName() + " has taken too long");
+                    Console.WriteLine(new String('-', 40));
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        private static void SolveProblemWithFringe<State>(IProblem<State> problem, Action<State> printState, Action<List<State>> printTrace, IFringe<Node<State>> fringe)
+        {
+            Console.WriteLine("\nSolving with " + fringe.GetName() + "...");
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var node = TreeSearchWithQueue<byte[,]>.Search(przesuwanka, fringe);
+            printState(problem.InitialState);
+            var node = TreeSearchWithQueue<State>.Search(problem, fringe);
             watch.Stop();
             if (node == null)
             {
@@ -179,19 +213,52 @@ namespace Przesuwanka
             else
             {
                 Console.WriteLine("Solution:");
-                PrintTable(node.NodeState);
                 var trace = node.ListOfNodes;
-                //foreach (var state in trace)
-                //{
-                //    PrintTable(state);
-                //}
-                Console.WriteLine("Number of steps: " + trace.Count);                
-            }            
+                if (printTrace != null)
+                {
+                    printTrace(trace);
+                }
+                else
+                {
+                    printState(node.NodeState);
+                }
+                Console.WriteLine("Number of steps: " + trace.Count);
+                Console.WriteLine("Total cost: " + node.PathCost);
+            }
             var elapsedMs = watch.ElapsedMilliseconds;
-            Console.WriteLine("\nUsed fringe: " + fringe.GetName());
             Console.WriteLine("Time elapsed [ms]: " + elapsedMs);
             Console.WriteLine(new String('-', 40));
             Console.WriteLine("\n");
+        }
+
+
+        private static void SolvePrzesuwanka(IList<IFringe<Node<byte[,]>>> fringes, int problemSize)
+        {
+            Console.WriteLine("Przesuwanka {0} x {0}", problemSize);
+
+            var przesuwanka = new Przesuwanka(problemSize);
+            foreach (var fringe in fringes)
+            {            
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var node = TreeSearchWithQueue<byte[,]>.Search(przesuwanka, fringe);
+                watch.Stop();
+                if (node == null)
+                {
+                    Console.WriteLine("Solution not found");
+                }
+                else
+                {
+                    Console.WriteLine("Solution:");
+                    PrintTable(node.NodeState);
+                    var trace = node.ListOfNodes;
+                    Console.WriteLine("Number of steps: " + trace.Count);
+                }
+                var elapsedMs = watch.ElapsedMilliseconds;
+                Console.WriteLine("\nUsed fringe: " + fringe.GetName());
+                Console.WriteLine("Time elapsed [ms]: " + elapsedMs);
+                Console.WriteLine(new String('-', 40));
+                Console.WriteLine("\n");
+            }
         }
 
         private static void SolveNQueens(IFringe<Node<byte[]>> fringe, int problemSize)
